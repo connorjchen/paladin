@@ -601,7 +601,7 @@ router.post(
           data: {
             content: supportAgentAnswer.answer,
             postId: post.id,
-            authorId: 'cmdkzne4300013envq7k9r3wu', // Support Agent - community.trypaladin.com
+            authorId: 'cmdkzne4300013envq7k9r3wu', // TODO: replace with your Support Agent's User object id
             parentId: null,
           },
         })

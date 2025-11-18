@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   const proto = req.headers['x-forwarded-proto'] || 'https'
 
   // Forward the request to your backend
-  const backendUrl = `https://api.trypaladin.com/internal/sitemap`
+  const backendUrl = `https://api.trypaladin.com/internal/sitemap` // TODO: replace with your backend URL
 
   const backendRes = await fetch(backendUrl, {
     method: req.method,

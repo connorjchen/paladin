@@ -137,7 +137,7 @@ router.post(
               id: message.id,
               threadId: post.discordThread.id,
               content: message.content,
-              authorId: 'cmeorhzpv000107l86ah63p88', // discordbot Discord User object
+              authorId: 'cmeorhzpv000107l86ah63p88', // TODO: replace with your Discord bot's DiscordUser object id
             },
           })
         }

@@ -22,7 +22,7 @@ export function simpleHash(str: string) {
   return Math.abs(hash).toString(16)
 }
 
-export const DISCORD_BOT_USER_ID = 'cmctmsef12001vjlsx8xrlf1n'
+export const DISCORD_BOT_USER_ID = 'cmctmsef12001vjlsx8xrlf1n' // TODO: replace with your Discord bot's User object id
 
 export function getDiscordAvatarIfExists(
   obj: DetailedPost | DetailedComment

@@ -439,7 +439,7 @@ export async function upsertDiscordMessage(
 
   const community = await requireCommunityLinked(message.guildId)
 
-  // TODO: this logic is really ugly
+  // DEBT: this logic is really ugly
   let parentChannelId
   if (message.channel.isThread()) {
     parentChannelId = message.channel.parentId

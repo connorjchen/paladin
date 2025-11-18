@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   const { num } = req.query
 
-  const backendUrl = `https://api.trypaladin.com/internal/sitemap/index/${num}`
+  const backendUrl = `https://api.trypaladin.com/internal/sitemap/index/${num}` // TODO: replace with your backend URL
 
   const backendRes = await fetch(backendUrl, {
     method: req.method,

@@ -46,6 +46,7 @@ async function getAllowedDomains() {
 }
 
 app.use(
+  // TODO: replace with your allowed domains
   cors({
     origin: async (origin, callback) => {
       // In non-prod, allow all
