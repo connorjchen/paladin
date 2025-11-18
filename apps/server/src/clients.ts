@@ -1,7 +1,6 @@
 import { PostHog } from 'posthog-node'
 import { createClerkClient } from '@clerk/express'
 import { Resend } from 'resend'
-import Stripe from 'stripe'
 import { algoliasearch } from 'algoliasearch'
 import { CloudClient as ChromaCloudClient } from 'chromadb'
 import { S3Client } from '@aws-sdk/client-s3'
@@ -18,10 +17,6 @@ export const clerkClient = createClerkClient({
 })
 
 export const resendClient = new Resend(process.env.RESEND_API_KEY)
-
-export const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-02-24.acacia',
-})
 
 export const algoliaClient = algoliasearch(
   process.env.ALGOLIA_APPLICATION_ID || '',

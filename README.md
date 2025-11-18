@@ -60,5 +60,4 @@ To deploy, simply push to `main` and Vercel and Railway will auto-deploy fronten
 - RAG Processing: Langchain
 - Auth: Clerk
 - Monorepo: Nx
-- Payments: Stripe
 - Emails: Resend
