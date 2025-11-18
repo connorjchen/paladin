@@ -16,24 +16,27 @@
 1. Set up Clerk for authentication
 2. Set up Postgres database (Neon preferred)
 3. Set up blob storage (Cloudflare preferred)
-4. Set up community frontend deployment (Vercel preferred)
+4. Set up Resend for email notifications
+5. Set up community frontend deployment (Vercel preferred)
    - Community Vercel Build Command Override: `(cd ../.. && (cd apps/server && npx prisma generate) && npx pnpm install && npx nx build community -c prod)` where root directory is apps/community
-5. (optional) Set up dashboard frontend deployment (Vercel preferred)
+6. (optional) Set up dashboard frontend deployment (Vercel preferred)
    - Dashboard Vercel Build Command Override: `(cd ../.. && (cd apps/server && npx prisma generate) && npx pnpm install && npx nx build dashboard -c prod)` where root directory is apps/dashboard
-6. Set up server deployment (Railway preferred)
+7. Set up server deployment (Railway preferred)
    - Server Railway Build Command Override: `(cd apps/server && npx prisma generate) && npx nx build server -c prod` where root directory is the root folder
    - Server Railway Start Command Override: `node apps/server/dist/main.js` where root directory is the root folder
-7. Set up Discord bot
+8. Set up Discord bot with proper permissions
+   - Required Privileged Gateway Intents: Server Members Intent and Message Content Intent
 
 ## Local Development
 
 1. Create `apps/community/.env`, `apps/dashboard/.env`, `apps/server/.env` based on respective `.env.example` files
 2. `pnpm install` dependencies in `/`
-3. To run community frontend: `nx serve community`
-4. To run dashboard frontend: `nx serve dashboard`
-5. To run server: `cd apps/server && pnpm dev`
+3. Generate prisma files: `cd apps/server && prisma generate`
+4. To run community frontend: `nx serve community`
+5. To run dashboard frontend: `nx serve dashboard`
+6. To run server: `cd apps/server && pnpm dev`
 
-# (Preferred) Tech Stack
+## (Preferred) Tech Stack
 
 #### Frontend
 
