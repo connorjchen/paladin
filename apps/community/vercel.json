@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/sitemap-:num",
+      "destination": "/api/sitemap/[num].js"
+    },
+    {
+      "source": "/api/sitemap/:num",
+      "destination": "/api/sitemap/[num].js"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/api/robots"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "@paladin/server",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "targets": {
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@paladin/server:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@paladin/server:build:development"
+          },
+          "production": {
+            "buildTarget": "@paladin/server:build:production"
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "dev": "nodemon"
+  },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.27.1",
+    "babel-loader": "^10.0.0",
+    "nodemon": "^3.1.7",
+    "tsx": "^4.20.3"
+  }
+}

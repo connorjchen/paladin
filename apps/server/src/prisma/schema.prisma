@@ -1,0 +1,323 @@
+// Generators
+generator server_client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+generator shared_client {
+  provider        = "prisma-client-js"
+  output          = "../../../../libs/shared/src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+generator community_client {
+  provider        = "prisma-client-js"
+  output          = "../../../../apps/community/src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+generator dashboard_client {
+  provider        = "prisma-client-js"
+  output          = "../../../../apps/dashboard/src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+// Datasource
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+// Enums
+enum CommunityPlan {
+  HOBBY
+  PRO
+  ENTERPRISE
+}
+
+enum UserRole {
+  ADMIN
+  MEMBER
+}
+
+enum PostType {
+  GENERAL
+  QUESTION
+  FEEDBACK
+}
+
+enum QuestionStatus {
+  AWAITING_USER_RESPONSE
+  AWAITING_ADMIN_RESPONSE
+  RESOLVED
+}
+
+enum FeedbackStatus {
+  UNDER_REVIEW
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  WONT_DO
+}
+
+enum ThemeMode {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+// Community is the top level entity that contains all the other entities
+model Community {
+  id                          String                      @id @default(cuid())
+  domain                      String                      @unique
+  isSupportAgentEnabled       Boolean                     @default(false)
+  name                        String
+  plan                        CommunityPlan               @default(HOBBY)
+  logoR2Key                   String?
+  logoDarkR2Key               String?
+  faviconR2Key                String?
+  accentColor                 String                      @default("#000000")
+  accentColorDark             String                      @default("#FFFFFF")
+  buttonTextColor             String                      @default("#FFFFFF")
+  buttonTextColorDark         String                      @default("#000000")
+  isRoadmapEnabled            Boolean                     @default(false)
+  isWebpageSubmissionsEnabled Boolean                     @default(false)
+  themeMode                   ThemeMode                   @default(SYSTEM)
+  users                       User[]
+  posts                       Post[]
+  tags                        PostTag[]
+  externalResources           CommunityExternalResource[]
+  documents                   Document[]
+  discordGuild                DiscordGuild?
+  createdAt                   DateTime                    @default(now())
+  updatedAt                   DateTime                    @updatedAt
+
+  @@index([domain])
+}
+
+model User {
+  id                               String        @id @default(cuid())
+  clerkUserId                      String // If user logs into two separate communities, they will still have the same clerkUserId, but will have different userIds
+  primaryEmail                     String
+  emails                           String[]
+  username                         String
+  firstName                        String
+  lastName                         String
+  image                            String
+  communityId                      String
+  isEmailNotificationsEnabled      Boolean       @default(true)
+  isAdminEmailNotificationsEnabled Boolean       @default(true)
+  community                        Community     @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  role                             UserRole
+  posts                            Post[]
+  comments                         Comment[]
+  upvotes                          Upvote[]
+  watchedPosts                     WatchedPost[]
+  createdAt                        DateTime      @default(now())
+  updatedAt                        DateTime      @updatedAt
+
+  @@unique([clerkUserId, communityId])
+  @@index([clerkUserId, communityId])
+}
+
+model Document {
+  id          String    @id @default(cuid())
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  name        String
+  r2Key       String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([communityId])
+}
+
+model CommunityExternalResource {
+  id          String    @id @default(cuid())
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  url         String
+  name        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model PostTag {
+  id              String           @id @default(cuid())
+  communityId     String
+  community       Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  name            String
+  color           String
+  discordTagId    String?          @unique // given by Discord API
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  posts           PostTagOnPost[]
+  discordChannels DiscordChannel[]
+
+  @@index([communityId])
+}
+
+model Post {
+  id              String          @id @default(cuid())
+  pinned          Boolean         @default(false)
+  type            PostType
+  authorId        String
+  author          User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title           String
+  content         String
+  communityId     String
+  private         Boolean
+  discordThreadId String?         @unique
+  discordThread   DiscordThread?  @relation(fields: [discordThreadId], references: [id], onDelete: Cascade)
+  community       Community       @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  questionStatus  QuestionStatus? // Only for questions
+  feedbackStatus  FeedbackStatus? // Only for feedback
+  comments        Comment[]
+  upvotes         Upvote[]
+  watchedPosts    WatchedPost[]
+  postTags        PostTagOnPost[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model PostTagOnPost {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tagId     String
+  tag       PostTag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([postId, tagId])
+  @@index([postId, tagId])
+}
+
+model WatchedPost {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([postId, userId])
+  @@index([postId, userId])
+}
+
+model Upvote {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([postId, userId])
+  @@index([postId, userId])
+}
+
+model Comment {
+  id               String          @id @default(cuid())
+  authorId         String
+  author           User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postId           String
+  post             Post            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parentId         String?
+  parent           Comment?        @relation("ParentComment", fields: [parentId], references: [id])
+  children         Comment[]       @relation("ParentComment")
+  content          String
+  isAcceptedAnswer Boolean         @default(false)
+  discordMessageId String?         @unique
+  discordMessage   DiscordMessage? @relation(fields: [discordMessageId], references: [id], onDelete: Cascade)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model DiscordGuild {
+  id          String           @id // given by Discord API
+  name        String
+  icon        String?
+  channels    DiscordChannel[]
+  communityId String           @unique
+  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model DiscordChannel {
+  id               String          @id // given by Discord API
+  guildId          String
+  guild            DiscordGuild    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  name             String
+  type             Int // e.g., 15 = forum channel
+  inviteLink       String?
+  shouldSync       Boolean         @default(false)
+  defaultPostType  PostType        @default(GENERAL)
+  defaultPostTagId String?
+  defaultPostTag   PostTag?        @relation(fields: [defaultPostTagId], references: [id])
+  threads          DiscordThread[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model DiscordUser {
+  id            String           @id // given by Discord API
+  username      String
+  discriminator String
+  avatar        String
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  threads       DiscordThread[]
+  messages      DiscordMessage[]
+}
+
+model DiscordThread {
+  id                        String                     @id // given by Discord API
+  channelId                 String
+  channel                   DiscordChannel             @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  title                     String
+  starterMessageId          String
+  starterMessageContent     String
+  starterMessageAttachments DiscordMessageAttachment[]
+  authorId                  String
+  author                    DiscordUser                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  messages                  DiscordMessage[]
+  post                      Post?
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
+}
+
+model DiscordMessage {
+  id          String                     @id // given by Discord API
+  threadId    String
+  thread      DiscordThread              @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  content     String
+  authorId    String
+  author      DiscordUser                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parentId    String?
+  parent      DiscordMessage?            @relation("ParentMessage", fields: [parentId], references: [id])
+  children    DiscordMessage[]           @relation("ParentMessage")
+  comment     Comment?
+  attachments DiscordMessageAttachment[]
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+}
+
+// DEBT: need to add a check to ensure that only one of messageId or threadId is set
+model DiscordMessageAttachment {
+  id              String          @id // given by Discord API
+  messageId       String? // If not starter message, this will be set
+  threadId        String? // If starter message, this will be set
+  message         DiscordMessage? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  thread          DiscordThread?  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  name            String
+  contentType     String?
+  size            Int
+  url             String
+  attachmentR2Key String // My hosted attachment
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
