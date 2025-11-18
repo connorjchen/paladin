@@ -3,6 +3,8 @@
 <img width="1509" height="1382" alt="Screenshot 2025-11-09 at 4 56 21 PM" src="https://github.com/user-attachments/assets/856a6f57-bf69-4046-a5bd-28b3dc3e32bc" />
 <img width="2366" height="1393" alt="Screenshot 2025-08-15 at 10 13 12 PM" src="https://github.com/user-attachments/assets/c7b6c61d-6b6c-4fd2-8dc1-f2d6b55b75ae" />
 
+Paladin is a support community platform that provides a web interface and a Discord integration for two-way syncing.
+
 ## Codebase Structure
 
 - Nx monorepo with 4 packages (community, dashboard, server, and shared)
@@ -10,6 +12,8 @@
 - Dashboard is a frontend package that serves the onboarding new community creation (required for hosted platform, not required for individual hosting)
 - Server is a backend package that serves all backend functions
 - Shared is a library that shares types and utility functions between other packages
+
+# Getting Started
 
 ## Hosting Yourself
 
@@ -29,12 +33,13 @@
 
 ## Local Development
 
-1. Create `apps/community/.env`, `apps/dashboard/.env`, `apps/server/.env` based on respective `.env.example` files
-2. `pnpm install` dependencies in `/`
-3. Generate prisma files: `cd apps/server && prisma generate`
-4. To run community frontend: `nx serve community`
-5. To run dashboard frontend: `nx serve dashboard`
-6. To run server: `cd apps/server && pnpm dev`
+1. Replace TODOs and references to trypaladin.com with your own logic
+2. Create `apps/community/.env`, `apps/dashboard/.env`, `apps/server/.env` based on respective `.env.example` files
+3. `pnpm install` dependencies in `/`
+4. Generate prisma files: `cd apps/server && prisma generate`
+5. To run community frontend: `nx serve community`
+6. To run dashboard frontend: `nx serve dashboard`
+7. To run server: `cd apps/server && pnpm dev`
 
 ## (Preferred) Tech Stack
 
