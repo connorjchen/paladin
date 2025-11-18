@@ -1,4 +1,5 @@
 # Paladin Support Community
+
 <img width="1509" height="1382" alt="Screenshot 2025-11-09 at 4 56 21 PM" src="https://github.com/user-attachments/assets/856a6f57-bf69-4046-a5bd-28b3dc3e32bc" />
 <img width="2366" height="1393" alt="Screenshot 2025-08-15 at 10 13 12 PM" src="https://github.com/user-attachments/assets/c7b6c61d-6b6c-4fd2-8dc1-f2d6b55b75ae" />
 <img width="2366" height="1394" alt="Screenshot 2025-08-15 at 10 13 25 PM" src="https://github.com/user-attachments/assets/440f295e-f5ad-4a1c-88cb-2e9523e4535c" />
@@ -12,9 +13,7 @@
 
 - To run community frontend: `nx serve community`
 - To run dashboard frontend: `nx serve dashboard`
-- To run server: `nx serve server`
 - To run server (faster): `cd apps/server && pnpm dev`
-- To run server scripts: `cd apps/server && pnpm <script name in package.json>`
 - To run prisma migration: `cd apps/server && prisma migrate dev`
 
 To deploy, simply push to `main` and Vercel and Railway will auto-deploy frontend and backend, respectively.
@@ -52,7 +51,6 @@ To deploy, simply push to `main` and Vercel and Railway will auto-deploy fronten
 ### Other
 
 - Package manager: pnpm
-- Domain manager: Porkbun
 - DNS manager: Cloudflare
 - Analytics: PostHog
 - Search: Algolia
